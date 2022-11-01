@@ -3,8 +3,19 @@ const Tour = require('../models/tourModel');
 //////
 exports.getAllTours = async (_req, _res) => {
   try {
-    console.log(_req.query);
-    const tours = await Tour.find();
+    const queryObj = {
+      // eslint-disable-next-line node/no-unsupported-features/es-syntax
+      ..._req.query,
+    };
+    const excludeFields = ['page', 'sort', 'limit', 'fields'];
+    excludeFields.forEach((el) => delete queryObj[el]);
+    const tours = await Tour.find(queryObj);
+
+    /* const tours = await Tour.find()
+      .where('duration')
+      .equals(5)
+      .where('difficulty')
+      .equals('easy'); */
     _res.status(200).json({
       status: 'success',
 
