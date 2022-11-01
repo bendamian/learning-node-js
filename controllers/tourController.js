@@ -3,18 +3,36 @@ const Tour = require('../models/tourModel');
 //////
 exports.getAllTours = async (_req, _res) => {
   try {
+    console.log(_req.query);
+    // filltering
     const queryObj = {
       // eslint-disable-next-line node/no-unsupported-features/es-syntax
       ..._req.query,
     };
-
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
     excludeFields.forEach((el) => delete queryObj[el]);
+    // advans filltering
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    console.log(JSON.parse(queryStr));
 
-    const query = Tour.find(queryObj);
-    const tour = await query;
+    /*  {
+      difficulty: 'easy',
+      duration: {
+        gte: '5'
+      }
+    }
+    gte,gt,lte,lt
+ */
 
-    /* const tours = await Tour.find()
+    const query = Tour.find(JSON.parse(queryStr));
+    const tours = await query;
+
+    /* 
+   
+    
+    
+    const tours = await Tour.find()
       .where('duration')
       .equals(5)
       .where('difficulty')
