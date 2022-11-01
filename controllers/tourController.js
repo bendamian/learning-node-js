@@ -7,9 +7,12 @@ exports.getAllTours = async (_req, _res) => {
       // eslint-disable-next-line node/no-unsupported-features/es-syntax
       ..._req.query,
     };
+
     const excludeFields = ['page', 'sort', 'limit', 'fields'];
     excludeFields.forEach((el) => delete queryObj[el]);
-    const tours = await Tour.find(queryObj);
+
+    const query = Tour.find(queryObj);
+    const tour = await query;
 
     /* const tours = await Tour.find()
       .where('duration')
