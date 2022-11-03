@@ -3,7 +3,7 @@ const Tour = require('../models/tourModel');
 //////
 exports.getAllTours = async (_req, _res) => {
   try {
-    console.log(_req.query);
+    console.log(_req.query, 'printer-1');
     // filltering
     const queryObj = {
       // eslint-disable-next-line node/no-unsupported-features/es-syntax
@@ -14,7 +14,7 @@ exports.getAllTours = async (_req, _res) => {
     // advans filltering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    console.log(JSON.parse(queryStr));
+    console.log(JSON.parse(queryStr), 'printer-2');
 
     /*  {
       difficulty: 'easy',
@@ -25,14 +25,15 @@ exports.getAllTours = async (_req, _res) => {
     gte,gt,lte,lt
  */
 
-    const query = Tour.find(JSON.parse(queryStr));
-    const tours = await query;
+    let query = Tour.find(JSON.parse(queryStr));
 
-    /* 
-   
-    
-    
-    const tours = await Tour.find()
+    if (_req.query.sort) {
+      const sortBy = _req.query.sort.split(',').join(' ');
+      console.log(sortBy);
+      query = query.sort(sortBy, 'printer-3');
+    }
+    const tours = await query;
+    /* const tours = await Tour.find()
       .where('duration')
       .equals(5)
       .where('difficulty')
