@@ -29,9 +29,20 @@ exports.getAllTours = async (_req, _res) => {
 
     if (_req.query.sort) {
       const sortBy = _req.query.sort.split(',').join(' ');
-      console.log(sortBy);
-      query = query.sort(sortBy, 'printer-3');
+      //console.log(sortBy, 'printer-3');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt');
     }
+    //  Limiting Fields
+    if (_req.query.fields) {
+      const fields = _req.query.fields.split(',').join(' ');
+      console.log(fields, 'printer-4');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__V');
+    }
+
     const tours = await query;
     /* const tours = await Tour.find()
       .where('duration')
